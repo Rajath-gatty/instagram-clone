@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?
+  email          String?   @unique
+  totalPosts     Int       @default(0)
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  followersCount Int       @default(0)
+  followingCount Int       @default(0)
+  followers      String[]  @default([]) @db.ObjectId
+  following      String[]  @default([]) @db.ObjectId
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  savedPosts     String[]  @db.ObjectId
+  likedPosts     String[]  @db.ObjectId
+
+  accounts Account[]
+  posts    Post[]
+  comments Comment[]
+}
+
+model Account {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.String
+  access_token      String?  @db.String
+  expires_at        Int?
+  token_type        String?
+  session_state     String?
+  scope             String?
+  id_token          String?  @db.String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Post {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  ImageUrl      String
+  caption       String
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String    @db.ObjectId
+  createdAt     DateTime  @default(now())
+  totalComments Int       @default(0)
+  likes         Int       @default(0)
+  comment       Comment[]
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String   @db.ObjectId
+  postId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+}
