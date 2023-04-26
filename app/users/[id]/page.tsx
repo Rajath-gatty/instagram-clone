@@ -17,7 +17,7 @@ const ProfilePost = async({params:{id}}:ProfilePostProps) => {
     post =<div className="grid grid-cols-3 gap-1 w-full" >
       {selectedUser.posts.map((post: any) => {
       return (
-        <Image key={post.id} src={post.ImageUrl} className="w-full max-w-[300px] max-h-[250px] h-full object-cover" alt="Profile" width={150} height={150} loading="lazy"/>
+        <Image key={post.id} src={post.ImageUrl} className="w-full max-w-[300px] max-h-[200px] h-full object-cover" alt="Profile" width={150} height={150} loading="lazy"/>
         )
       })}
     </div>

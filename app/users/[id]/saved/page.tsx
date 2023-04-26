@@ -1,7 +1,7 @@
 
 const Savedpage = () => {
   return (
-    <div className="text-white">Savedpage</div>
+    <div className="text-white text-center mt-8">No post yet</div>
   )
 }
 

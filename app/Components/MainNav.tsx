@@ -1,6 +1,7 @@
 "use client"
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useState} from "react";
 import {RiAccountPinCircleFill} from 'react-icons/ri'
 import {AiFillHome,AiOutlineInstagram} from "react-icons/ai"
@@ -19,6 +20,8 @@ const MainNav = ({user}:MainNavProps) => {
     const [caption,setCaption] = useState('');
     const [base64,setBase64] = useState('');
     const [loading,setLoading] = useState(false);
+
+    const router = useRouter();
 
     const handleCloseModal = () => {
         setmodal(false);
@@ -40,7 +43,8 @@ const MainNav = ({user}:MainNavProps) => {
           method: "POST",
           body:formData
         });
-        setLoading(false)
+        setLoading(false);
+        router.push(`/users/${user?.id}`)
       } catch(err) {
         setLoading(false)
         throw new Error('Something went wrong')

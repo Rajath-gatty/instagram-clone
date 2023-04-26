@@ -1,9 +1,15 @@
-import {useState, ChangeEvent} from "react";
+import {useState, ChangeEvent, Dispatch, SetStateAction} from "react";
+import { safeComment } from "../types";
+import { formatDistanceToNow } from "date-fns";
+import { useUserContext } from "../Context/UserContext";
 
-export const useForm = (postId:string) => {
+
+export const useForm = (postId:string,setComments?: Dispatch<SetStateAction<safeComment[] | undefined>>) => {
     const [showPostBtn, setShowPostBtn] = useState<boolean>(false);
     const [commentvalue, setCommentValue] = useState<string>('');
     const [loading,setLoading] = useState(false);
+
+    const {state} = useUserContext();
 
     const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
         const text = e.target.value;
@@ -23,6 +29,27 @@ export const useForm = (postId:string) => {
             return;
         }
         setLoading(true);
+
+        if(setComments?.name) {
+            const comment: safeComment = {
+                id: Math.ceil(Math.random()*180).toString(),
+                postId,
+                userId: state.id,
+                title: commentvalue,
+                createdAt: new Date().toISOString(),
+                user: {
+                    image: state.image,
+                    name: state.name
+                }
+            }
+
+            setComments(prev => {
+                if(!prev) {
+                    return [];
+                }
+                return [comment,...prev]
+            })
+        }
  
         await fetch('/api/postComment',{
             method: "POST",

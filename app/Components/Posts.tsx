@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image";
-import { PostModal, homePost, safeComment } from "../types";
+import { PostModal, homePost, safeComment, safeUser } from "../types";
 import Modal from "./Modal";
 import Post from "./Post";
 import {useState, useEffect} from "react";
@@ -9,29 +9,21 @@ import useForm from "../hooks/useForm";
 import { useUserContext } from "../Context/UserContext";
 
 interface PostsProps {
-  homePosts: homePost[]
+  homePosts: homePost[],
+  currentUser: safeUser
 }
 
-const Posts = ({homePosts}:PostsProps) => {
+const Posts = ({homePosts,currentUser}:PostsProps) => {
   const [showModal, setShowModal] = useState(false);
   const [comments,setComments] = useState<safeComment[] | undefined>([]);
   const [post,setPost] = useState<PostModal | null>(null);
   const [loading, setLoading] = useState(false);
 
   const {setCurrentUser} = useUserContext();
-  const {submit,handleChange,showPostBtn,commentvalue,loading:formLoading} = useForm(post?.postId as string);
+  const {submit,handleChange,showPostBtn,commentvalue,loading:formLoading} = useForm(post?.postId as string,setComments);
 
   useEffect(() => {
-    const getCurrentUser = async() => {
-      try {
-        const res = await fetch('/api/user/session',{next:{revalidate:60*60}});
-        const currentUser = await res.json();
-        setCurrentUser(currentUser);
-      } catch(err: any) {
-        throw new Error(err.msg)
-      }
-    }
-    getCurrentUser();
+    setCurrentUser(currentUser);
   },[])
 
   const handleCloseModal = () => {
@@ -59,7 +51,7 @@ const Posts = ({homePosts}:PostsProps) => {
     <div className="max-w-xl mx-auto mt-8">
       {
         homePosts?.map(post => {
-          return <Post data={post} key={post.id} fetchComments={fetchComments}/>
+          return <Post data={post} key={post.id} fetchComments={fetchComments} isLikedPost={currentUser.likedPosts.some(id => id === post.id)} />
         })
       }
       <Modal showModal={showModal} closeModal={handleCloseModal} width="max-w-[300px] md:max-w-5xl">
@@ -72,9 +64,11 @@ const Posts = ({homePosts}:PostsProps) => {
               <div className="px-4 overflow-y-auto h-[350px] md:h-[450px] mb-[45px] scrollbar-style">
               {loading?<h1 className="text-center mt-12 text-md text-white">Loading...</h1>
               :
-                comments?.map(comment => {
+               comments?.length!>0? comments?.map(comment => {
                   return <Comment key={comment.id} data={comment}/>
                   })
+                  :<p className="text-center text-slate-500 mt-16">No comments yet</p>
+ 
                 }
               </div>
               <div className="bottom-1 left-0 absolute border-t border-slate-700 w-full -mb-1">

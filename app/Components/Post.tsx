@@ -12,11 +12,12 @@ import { useUserContext } from "../Context/UserContext";
 
 interface PostProps {
     data: homePost,
+    isLikedPost: boolean,
     fetchComments: (post: PostModal) => void
 }
 
-const Post = ({data,fetchComments}:PostProps) => {
-    const [isLiked,setIsliked] = useState(false);
+const Post = ({data,fetchComments,isLikedPost}:PostProps) => {
+    const [isLiked,setIsliked] = useState(isLikedPost);
     const [totalLikes,setTotalLikes] = useState(data.likes);
     const [loading,setLoading] = useState(false);
     const [showHeartAnimation,setShowHeartAnimation] = useState(false);
@@ -30,9 +31,8 @@ const Post = ({data,fetchComments}:PostProps) => {
             setIsliked(state.likedPosts.includes(data.id));
     },[state.likedPosts])
 
-    const handleLikeAndUnlike = async(id: string) => {
-        if(isLiked) {
-            if(loading) return;
+    const dislikePost = async(id: string) => {
+        if(loading) return;
             setIsliked(prev => !prev)
             unlikePost(id)
             setShowHeartAnimation(false);
@@ -46,23 +46,38 @@ const Post = ({data,fetchComments}:PostProps) => {
                 body: JSON.stringify({postId:id})
             })
             setLoading(false);
-            
-            
+    }
+
+    const likePost = async(id: string) => {
+        if(loading) return;
+        setIsliked(prev => !prev)
+        setLikedPost(id)
+        setShowHeartAnimation(true);
+        setTotalLikes(prev => ++prev)
+        setLoading(true);
+        await fetch('/api/post/like',{
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({postId:id})
+        })
+        setLoading(false);
+    }
+
+    const handleLikeAndUnlike = async(id: string) => {
+        if(isLiked) {
+          await dislikePost(id);
         } else {
-            if(loading) return;
-            setIsliked(prev => !prev)
-            setLikedPost(id)
-            setShowHeartAnimation(true);
-            setTotalLikes(prev => ++prev)
-            setLoading(true);
-            await fetch('/api/post/like',{
-                method: "POST",
-                headers: {
-                    "Content-type": "application/json"
-                },
-                body: JSON.stringify({postId:id})
-            })
-            setLoading(false);
+          await likePost(id);
+        }
+    }
+    
+    const handleDoubleTapLike = (id: string) => {
+        if(isLiked) {
+            return;
+        } else {
+            likePost(id);
         }
     }
 
@@ -75,9 +90,16 @@ const Post = ({data,fetchComments}:PostProps) => {
         </div>
         <div className="relative">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <AiFillHeart size={90} className={showHeartAnimation?`post-heart block`:`hidden`} color="#ececec"/>
+                <AiFillHeart size={90} className={showHeartAnimation?`post-heart block`:`hidden`} color="#ececec" />
             </div>
-            <Image className="w-full" src={data.ImageUrl} width={300} height={400} alt="Profile"/>
+            <Image 
+            className="w-full" 
+            src={data.ImageUrl} 
+            width={300} 
+            height={400} 
+            alt="Profile"
+            onDoubleClick={()=>handleDoubleTapLike(data.id)}
+            />
         </div>
         <div className="p-4">
             <div className="flex justify-between mb-3">
