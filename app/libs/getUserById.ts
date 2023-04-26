@@ -1,5 +1,6 @@
-import { safePost, safeUser } from "../types";
+import { safeUser } from "../types";
 import { Post,User } from "@prisma/client";
+import prisma from "../database/db";
 
 export default async function getUserById (id: string): Promise<safeUser> {
     const res = await prisma?.user.findUnique({

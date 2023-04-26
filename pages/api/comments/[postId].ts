@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "../../../app/database/db";
 
 export default async function handler(req: NextApiRequest, res:NextApiResponse) {
         const {postId} = req.query;

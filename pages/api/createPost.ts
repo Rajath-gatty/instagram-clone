@@ -3,6 +3,7 @@ import uploadFile from "@/app/libs/blobStorage";
 import { PassThrough } from "stream";
 import { getSession } from "next-auth/react";
 import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "../../app/database/db";
 
 export const config = {
    api: { bodyParser:false}

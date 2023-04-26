@@ -1,5 +1,6 @@
 import { Post } from "@prisma/client";
 import getCurrentUser from "./getServerSession";
+import prisma from "../database/db";
 
 export default async function getUserPosts() {
     const user = await getCurrentUser({posts:false});
