@@ -9,6 +9,7 @@ import {BsBookmark} from "react-icons/bs";
 import { PostModal, homePost } from "../types";
 import { formatDistanceToNow } from "date-fns";
 import { useUserContext } from "../Context/UserContext";
+import Link from "next/link";
 
 interface PostProps {
     data: homePost,
@@ -83,11 +84,11 @@ const Post = ({data,fetchComments,isLikedPost}:PostProps) => {
 
   return (
     <div>
-        <div className="flex gap-4 items-center mb-3">
+        <Link href={`/users/${data.user.id}`} className="flex gap-4 items-center mb-3" >
             <Image src={data.user.image} className="rounded-full w-[45px] h-[45px]" alt="profile" width={40} height={40}/>
             <h1 className="text-white font-medium">{data.user.authorName}</h1>
             <p className="text-slate-500">{formatDistanceToNow(new Date(data.createdAt))}</p>
-        </div>
+        </Link>
         <div className="relative">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <AiFillHeart size={90} className={showHeartAnimation?`post-heart block`:`hidden`} color="#ececec" />

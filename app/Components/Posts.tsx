@@ -22,6 +22,7 @@ const Posts = ({homePosts,currentUser}:PostsProps) => {
   const {setCurrentUser} = useUserContext();
   const {submit,handleChange,showPostBtn,commentvalue,loading:formLoading} = useForm(post?.postId as string,setComments);
 
+
   useEffect(() => {
     setCurrentUser(currentUser);
   },[])
@@ -50,9 +51,15 @@ const Posts = ({homePosts,currentUser}:PostsProps) => {
   return (
     <div className="max-w-xl mx-auto mt-4">
       {
-        homePosts?.map(post => {
+        homePosts.length>0 ? homePosts?.map(post => {
           return <Post data={post} key={post.id} fetchComments={fetchComments} isLikedPost={currentUser.likedPosts.some(id => id === post.id)} />
         })
+        :
+        <div className="mt-32">
+          <Image width={200} height={200} className="mx-auto" src="/not-found-icon.svg"  alt="not found icon"/>
+          <p className="text-center text-2xl font-medium text-slate-400 ">No posts found</p>
+          <p className="text-center text-md mt-2 font-medium text-slate-500 ">Follow someone to show their posts</p>
+        </div>
       }
       <Modal showModal={showModal} closeModal={handleCloseModal} width="max-w-[300px] md:max-w-5xl">
           <div className="flex flex-col md:flex-row w-full h-full ">
