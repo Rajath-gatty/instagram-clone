@@ -29,14 +29,12 @@ const reducer = (state: any,action: any) => {
         const newState = {...state};
         const updatedLike = [...newState.likedPosts,action.payload]
         const updatedState = {...newState,likedPosts:updatedLike}
-        console.log(updatedState)
         return updatedState;
     } 
     else if(action.type==="UNLIKE_POST") {
         const newState = {...state};
         const updatedLikedPosts = newState.likedPosts.filter((id: string) => id !== action.payload);
         const updatedState = {...newState,likedPosts:updatedLikedPosts}
-        console.log(updatedState)
         return updatedState;
     } 
 }
