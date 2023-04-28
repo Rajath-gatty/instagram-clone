@@ -29,27 +29,6 @@ export const useForm = (postId:string,setComments?: Dispatch<SetStateAction<safe
             return;
         }
         setLoading(true);
-
-        if(setComments?.name) {
-            const comment: safeComment = {
-                id: Math.ceil(Math.random()*180).toString(),
-                postId,
-                userId: state.id,
-                title: commentvalue,
-                createdAt: new Date().toISOString(),
-                user: {
-                    image: state.image,
-                    name: state.name
-                }
-            }
-
-            setComments(prev => {
-                if(!prev) {
-                    return [];
-                }
-                return [comment,...prev]
-            })
-        }
  
         await fetch('/api/postComment',{
             method: "POST",
@@ -61,6 +40,25 @@ export const useForm = (postId:string,setComments?: Dispatch<SetStateAction<safe
                 comment: commentvalue,
             })
         })
+        if(setComments?.name) {
+        const comment: safeComment = {
+            id: Math.ceil(Math.random()*180).toString(),
+            postId,
+            userId: state.id,
+            title: commentvalue,
+            createdAt: new Date().toISOString(),
+            user: {
+                image: state.image,
+                name: state.name
+            }
+        }
+        setComments(prev => {
+            if(!prev) {
+                return [];
+            }
+            return [comment,...prev]
+        })
+    }
         setLoading(false);
         setShowPostBtn(false);
         setCommentValue('');

@@ -48,7 +48,7 @@ const Posts = ({homePosts,currentUser}:PostsProps) => {
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-8">
+    <div className="max-w-xl mx-auto mt-4">
       {
         homePosts?.map(post => {
           return <Post data={post} key={post.id} fetchComments={fetchComments} isLikedPost={currentUser.likedPosts.some(id => id === post.id)} />
@@ -61,7 +61,7 @@ const Posts = ({homePosts,currentUser}:PostsProps) => {
             </div>
             <div className="flex-1 text-white h-full relative border-l bg-gray-800 border-slate-700">
               <h1 className="text-lg font-medium border-b border-slate-700 p-3">Comments</h1>
-              <div className="px-4 overflow-y-auto h-[350px] md:h-[450px] mb-[45px] scrollbar-style">
+              <div className="px-4 overflow-y-auto h-[320px] md:h-[450px] mb-[45px] scrollbar-style">
               {loading?<h1 className="text-center mt-12 text-md text-white">Loading...</h1>
               :
                comments?.length!>0? comments?.map(comment => {
