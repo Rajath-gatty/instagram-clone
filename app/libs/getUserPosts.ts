@@ -6,6 +6,7 @@ export default async function getUserPosts() {
     const user = await getCurrentUser({posts:false});
 
     // const start = Date.now();
+
     const postAuthor = await prisma?.user.findMany({
         where: {
             id: {

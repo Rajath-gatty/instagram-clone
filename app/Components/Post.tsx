@@ -96,7 +96,7 @@ const Post = ({data,fetchComments,isLikedPost}:PostProps) => {
             className="w-full" 
             src={data.ImageUrl} 
             width={300} 
-            height={400} 
+            height={300} 
             alt="Profile"
             onDoubleClick={()=>handleDoubleTapLike(data.id)}
             />
