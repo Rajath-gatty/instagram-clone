@@ -1,26 +1,26 @@
-import { StorageSharedKeyCredential, BlobServiceClient } from "@azure/storage-blob";
+import { S3Client } from "@aws-sdk/client-s3";
+const { Upload } = require("@aws-sdk/lib-storage");
 
-const account=process.env.AZURE_STORAGE_ACCOUNT_NAME as string;
-const accountKey=process.env.AZURE_STORAGE_ACCOUNT_KEY as string;
-const sharedKeyCredential = new StorageSharedKeyCredential(account, accountKey);
+const s3Client = new S3Client({ region: "ap-south-1" });
 
-const blobServiceClient = new BlobServiceClient(
-`https://${account}.blob.core.windows.net`,
-sharedKeyCredential
-);
-
-const uploadFile = async(file: any,fileName: string,container: string) => {
+const uploadFile = async (file: any, fileName: string, container: string) => {
     try {
-        const containerClient = blobServiceClient.getContainerClient(container);
-        const blockBlobClient =  containerClient.getBlockBlobClient(fileName);
-        await blockBlobClient.uploadStream(file);
-        
+        const uploadParams = {
+            Bucket: "instagram-clone01",
+            Key: `posts/${fileName}`, // The name of the file in S3
+            Body: file,
+        };
+
+        const upload = new Upload({
+            client: s3Client,
+            params: uploadParams,
+            leavePartsOnError: false, // Clean up any parts if the upload fails
+        });
+
+        await upload.done();
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 export default uploadFile;
-
-
-

@@ -4,7 +4,7 @@ const nextConfig = {
     appDir: true,
   },
   images:{
-    domains:["lh3.googleusercontent.com","instagramclone.blob.core.windows.net"]
+    domains:["lh3.googleusercontent.com","instagram-clone01.s3.ap-south-1.amazonaws.com"]
   }
 }
 
